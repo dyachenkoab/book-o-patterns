@@ -12,6 +12,6 @@ if __name__ == '__main__':
     test_allocate.test_returns_allocated_batch_ref()
     test_allocate.test_prefers_earlier_batches()
     test_allocate.test_prefers_current_stock_batches_to_shipments()
-    pass
+    test_allocate.test_raises_out_of_stock_exception_if_cannot_allocate()
 
 

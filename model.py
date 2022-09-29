@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from typing import Optional, List
 
 
+class OutOfStock(Exception):
+    pass
+
 @dataclass(frozen=True)
 class OrderLine:
     orderid: str
@@ -49,9 +52,12 @@ class Batch:
         return self._purchased_quantity - self.allocated_quantity
 
     def can_allocate(self, line: OrderLine) -> bool:
-        return self.sku == line.sku and self._purchased_quantity >= line.qty
+        return self.sku == line.sku and self.available_quantity >= line.qty
 
 def allocate(line: OrderLine, batches: List[Batch]) -> str:
-    batch = next(b for b in sorted(batches) if b.can_allocate(line))
-    batch.allocate(line)
-    return batch.reference
+    try:
+        batch = next(b for b in sorted(batches) if b.can_allocate(line))
+        batch.allocate(line)
+        return batch.reference
+    except StopIteration:
+        raise OutOfStock(f'Артикула {line.sku} нет в наличии.')
