@@ -1,5 +1,6 @@
 import test_batches
 import test_allocate
+import test_repository
 
 if __name__ == '__main__':
     test_batches.test_allocating_to_a_batch_reduces_the_available_quantity()
@@ -14,4 +15,5 @@ if __name__ == '__main__':
     test_allocate.test_prefers_current_stock_batches_to_shipments()
     test_allocate.test_raises_out_of_stock_exception_if_cannot_allocate()
 
+    test_repository.test_fake_repository_can_save_a_batch()
 
