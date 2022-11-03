@@ -1,16 +1,19 @@
 import model
 import repository
+from test_orm import postgres_session, postgres_db
 
 
-def test_repository_can_save_a_batch(session):
+def test_repository_can_save_a_batch(postgres_session):
     batch = model.Batch('batch1', "RUSTY_SOAPDISH", 100, eta=None)
-
-    repo = repository.SqlAlchemyRepository(session)
+    repo = repository.SqlAlchemyRepository(postgres_session)
     repo.add(batch)
-    session.commit()
-
-    rows = list(session.execute('SELECT reference, sku, _purchased_quantity, eta FROM "batches"'))
-    assert rows == [('batch1', "RUSTY_SOAPDISH", 100, None)]
+    try:
+        rows = list(postgres_session.execute('SELECT reference, sku, _purchased_quantity, eta FROM batches'))
+        assert rows == [('batch1', "RUSTY_SOAPDISH", 100, None)]
+    except Exception:
+        raise
+    finally:
+        repo.clear()
 
 
 def test_fake_repository_can_save_a_batch():
@@ -22,4 +25,3 @@ def test_fake_repository_can_save_a_batch():
 
     saved_batch = repo.get('batch1')
     assert saved_batch == batch1
-

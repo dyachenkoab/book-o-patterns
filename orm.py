@@ -33,14 +33,14 @@ allocations = Table(
 
 def start_mappers():
     lines_mapper = mapper(model.OrderLine, order_lines_al)
-    # mapper(
-    #     model.Batch,
-    #     batches,
-    #     properties={
-    #         "_allocations": relationship(
-    #             lines_mapper,
-    #             secondary=allocations,
-    #             collection_class=set,
-    #         )
-    #     },
-    # )
+    mapper(
+        model.Batch,
+        batches,
+        properties={
+            "_allocations": relationship(
+                lines_mapper,
+                secondary=allocations,
+                collection_class=set,
+            )
+        },
+    )

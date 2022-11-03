@@ -1,5 +1,4 @@
 import abc
-
 import model
 
 
@@ -19,12 +18,17 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def add(self, batch):
         self.session.add(batch)
+        self.session.commit()
 
     def get(self, reference):
         return self.session.query(model.Batch).filter_by(reference=reference).one()
 
     def list(self):
         return self.session.query(model.Batch).all()
+
+    def clear(self):
+        self.session.query(model.Batch).delete()
+        self.session.commit()
 
 
 class FakeRepository(AbstractRepository):
