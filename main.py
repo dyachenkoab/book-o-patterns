@@ -1,5 +1,6 @@
 import test_batches
 import test_allocate
+import test_orm
 import test_repository
 
 if __name__ == '__main__':

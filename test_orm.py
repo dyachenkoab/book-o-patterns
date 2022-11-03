@@ -3,33 +3,35 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from orm import metadata, start_mappers
+from orm import start_mappers, table, metadata
 
 
 @pytest.fixture
-def in_memory_db():
-    engine = create_engine("sqlite:///:memory:")
+def postgres_db():
+    engine = create_engine('postgresql://postgres@127.0.0.1/postgres')
+    engine.connect()
     metadata.create_all(engine)
     return engine
 
 
 @pytest.fixture
-def session(in_memory_db):
+def postgres_session(postgres_db):
     start_mappers()
-    yield sessionmaker(bind=in_memory_db)()
+    yield sessionmaker(bind=postgres_db)()
     clear_mappers()
 
 
-def test_orderline_mapper_can_load_lines(session):
-    session.execute(
-        "INSERT INTO order_lines (orderid, sku, qty) VALUES "
-        '("order1", "RED-CHAIR", 12),'
-        '("order1", "RED-TABLE", 13),'
-        '("order2", "BLUE-LIPSTICK", 14)'
-    )
+def test_orderline_mapper_can_load_lines(postgres_session):
+    postgres_session.execute(
+        f'''INSERT INTO {table} (ORDERID, SKU, QTY) VALUES
+        ('order1', 'RED-CHAIR', 12),
+        ('order1', 'COUNTRY-LAMP', 13),
+        ('order2', 'BLUE-LIPSTICK', 14);''')
+
     expected = [
-        model.OrderLine("order1", "RED-CHAIR", 12),
-        model.OrderLine("order1", "RED-TABLE", 13),
-        model.OrderLine("order2", "BLUE-LIPSTICK", 14),
+        model.OrderLine("order1", 'RED-CHAIR', 12),
+        model.OrderLine("order1", 'COUNTRY-LAMP', 13),
+        model.OrderLine("order2", 'BLUE-LIPSTICK', 14),
     ]
-    assert session.query(model.OrderLine).all() == expected
+
+    assert postgres_session.query(model.OrderLine).all() == expected

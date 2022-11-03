@@ -6,11 +6,14 @@ from typing import Optional, List
 class OutOfStock(Exception):
     pass
 
-@dataclass(frozen=True)
+
+@dataclass(unsafe_hash=True)
+# must be frozen, but sqlalchemy did not want to
 class OrderLine:
     orderid: str
     sku: str
     qty: int
+
 
 class Batch:
     def __init__(self, ref: str, sku: str, qty: int, eta: Optional[date]):
@@ -53,6 +56,7 @@ class Batch:
 
     def can_allocate(self, line: OrderLine) -> bool:
         return self.sku == line.sku and self.available_quantity >= line.qty
+
 
 def allocate(line: OrderLine, batches: List[Batch]) -> str:
     try:
