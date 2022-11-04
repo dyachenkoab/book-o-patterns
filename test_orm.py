@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from orm import start_mappers, table, metadata
+from orm import start_mappers, order_lines, metadata
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def postgres_session(postgres_db):
 
 def test_orderline_mapper_can_load_lines(postgres_session):
     postgres_session.execute(
-        f'''INSERT INTO {table} (ORDERID, SKU, QTY) VALUES
+        f'''INSERT INTO {order_lines} (ORDERID, SKU, QTY) VALUES
         ('order1', 'RED-CHAIR', 12),
         ('order1', 'COUNTRY-LAMP', 13),
         ('order2', 'BLUE-LIPSTICK', 14);''')

@@ -1,4 +1,7 @@
 import abc
+
+import sqlalchemy.exc as sql_exception
+
 import model
 
 
@@ -12,16 +15,19 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
 
-class SqlAlchemyRepository(AbstractRepository):
+class PostgresRepository(AbstractRepository):
     def __init__(self, session):
         self.session = session
 
-    def add(self, batch):
+    def add(self, batch: model.Batch):
         self.session.add(batch)
         self.session.commit()
 
-    def get(self, reference):
-        return self.session.query(model.Batch).filter_by(reference=reference).one()
+    def get(self, reference: str) -> model.Batch:
+        try:
+            return self.session.query(model.Batch).filter_by(reference=reference).one()
+        except sql_exception.NoResultFound:
+            print('Batch did not found.')
 
     def list(self):
         return self.session.query(model.Batch).all()
