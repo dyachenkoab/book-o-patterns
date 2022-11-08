@@ -11,30 +11,28 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get(self, reference) -> model.Batch:
+    def get(self, reference: str) -> model.Batch:
         raise NotImplementedError
 
 
-class PostgresRepository(AbstractRepository):
+class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session):
-        self.session = session
+        self.__session = session
 
-    def add(self, batch: model.Batch):
-        self.session.add(batch)
-        self.session.commit()
+    def add(self, batch):
+        self.__session.add(batch)
 
-    def get(self, reference: str) -> model.Batch:
+    def get(self, reference):
         try:
-            return self.session.query(model.Batch).filter_by(reference=reference).one()
+            return self.__session.query(model.Batch).filter_by(reference=reference).one()
         except sql_exception.NoResultFound:
             print('Batch did not found.')
 
     def list(self):
-        return self.session.query(model.Batch).all()
+        return self.__session.query(model.Batch).all()
 
     def clear(self):
-        self.session.query(model.Batch).delete()
-        self.session.commit()
+        self.__session.query(model.Batch).delete()
 
 
 class FakeRepository(AbstractRepository):
