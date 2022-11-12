@@ -1,9 +1,9 @@
 import pytest
 
-import model
-import repository
-from orm import order_lines, batches, allocations
-from test_orm import postgres_session, postgres_db
+from src.domain import model
+from src.adapters import repository
+from src.adapters.orm import allocations
+from src.tests.test_orm import postgres_session, postgres_db
 
 
 def test_repository_can_save_a_batch(postgres_session):

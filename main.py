@@ -1,7 +1,4 @@
-import test_batches
-import test_allocate
-import test_orm
-import test_repository
+from src.tests import test_batches, test_allocate, test_repository
 
 if __name__ == '__main__':
     test_batches.test_allocating_to_a_batch_reduces_the_available_quantity()

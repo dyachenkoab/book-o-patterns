@@ -2,7 +2,7 @@ import abc
 
 import sqlalchemy.exc as sql_exception
 
-import model
+from src.domain import model
 
 
 class AbstractRepository(abc.ABC):

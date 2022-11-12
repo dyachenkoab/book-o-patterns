@@ -1,14 +1,15 @@
-import model
+from src import config
+from src.domain import model
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from orm import start_mappers, order_lines, metadata, allocations
+from src.adapters.orm import start_mappers, order_lines, metadata
 
 
 @pytest.fixture
 def postgres_db():
-    engine = create_engine('postgresql://postgres@127.0.0.1/postgres')
+    engine = create_engine(config.get_postgres_uri())
     engine.connect()
     metadata.create_all(engine)
     return engine
