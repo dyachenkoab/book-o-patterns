@@ -7,3 +7,6 @@ def get_postgres_uri():
     # password = os.environ.get('DB_PASSWORD', '')
     user, db_name = 'postgres', 'postgres'
     return f'postgresql://{user}@{host}:{port}/{db_name}'
+
+def get_api_url():
+    return 'mya_api_ip'
